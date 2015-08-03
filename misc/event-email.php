@@ -25,7 +25,7 @@ class EventRocket_EventEmail
 
         // wordpress requires that you save the file to disk, lets put in uploads folder
         // we re-write every time in case teh event has changed since last use
-        file_put_contents( WP_CONTENT_DIR . '/uploads/event-' . $this->post_id . '.ics' );
+        file_put_contents( WP_CONTENT_DIR . '/uploads/event-' . $this->post_id . '.ics', $this->ics );
     }
 
     private function set_body( $body = null ){

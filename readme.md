@@ -126,7 +126,8 @@ required).
 ### 3.2
 * Further fix in [event_embed]'s query building
 * Limited attendance option added
-* Added ability to email attendees
+* Added ability to email attendees (with attachment ics)
+* Added ability to send email on RSVP
 
 ### 3.1
 * Protective measures added to prevent/limit abuse of data shortcodes

@@ -6,11 +6,13 @@ class EventRocket_RSVPAttendance
 
 	protected $event_id  = 0;
 	protected $attendees = array();
+	protected $email_rsvp = false;
 
 
 	public function __construct( $event_id ) {
 		$this->event_id  = $event_id;
 		$this->attendees = (array) get_post_meta( $this->event_id, self::ATTENDEES, true );
+		$this->email_rsvp = get_post_meta( $this->event_id, EventRocket_RSVPManager::EMAIL_RSVP, true );
 		unset( $this->attendees[0] );
 	}
 
@@ -33,6 +35,12 @@ class EventRocket_RSVPAttendance
 		$user_id = absint( $user_id );
 		$user = new EventRocket_RSVPUser( $user_id );
 		$user->set_to_attend( $this->event_id );
+
+		if($this->email_rsvp){
+			$emailer = new EventRocket_EventEmail( $this->event_id );
+			$u = get_user_by( 'id', $user_id );
+			$emailer->send( $u->user_email );
+		}
 
 		$this->attendees[$user_id] = 1;
 		$this->save();
@@ -211,6 +219,8 @@ class EventRocket_RSVPAttendance
 		}
 
 		// unregistered
+		if ( ! isset($this->attendees[self::ANONYMOUS] ) ) return;
+
 		foreach ( $this->attendees[self::ANONYMOUS] as $attendee => $is_attending ) {
 			if ( ! $is_attending ) continue;
 			//wp_mail( $attendee, $subject, $body );

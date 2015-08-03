@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) or die();
 		<td> <input type="checkbox" name="<?php esc_attr_e( EventRocket_RSVPManager::ENABLE_RSVP ) ?>" <?php checked( $enabled ) ?>/> </td>
 
 		<!-- Summary -->
-		<td rowspan="3">
+		<td rowspan="4">
 			<table>
 				<tr>
 					<td class="eventrocket_rsvp_attending"> <?php _e( 'Attending:', 'eventrocket' ) ?> </td>
@@ -45,6 +45,11 @@ defined( 'ABSPATH' ) or die();
 	<tr class="eventrocket_additionaloptions">
 		<td> <?php _e( 'Restrict to logged in users:', 'eventrocket' ) ?> </td>
 		<td> <input type="checkbox" name="<?php esc_attr_e( EventRocket_RSVPManager::RESTRICT_RSVP ) ?>" <?php checked( $restricted ) ?>/> </td>
+	</tr>
+
+	<tr class="eventrocket_additionaloptions">
+		<td> <?php _e( 'Email users on RSVP:', 'eventrocket' ) ?> </td>
+		<td> <input type="checkbox" name="<?php esc_attr_e( EventRocket_RSVPManager::EMAIL_RSVP ) ?>" <?php checked( $email ) ?>/> </td>
 	</tr>
 
 	<tr class="eventrocket_additionaloptions">
