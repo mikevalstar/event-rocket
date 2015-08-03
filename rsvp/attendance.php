@@ -211,7 +211,7 @@ class EventRocket_RSVPAttendance
 		$emailer = new EventRocket_EventEmail( $this->event_id, $subject, $body );
 
 		// registered
-		foreach ( $attendees as $user_id => $is_attending ) {
+		foreach ( $this->attendees as $user_id => $is_attending ) {
 			if ( ! $is_attending ) continue;
 			if ( ! ( $user = get_user_by( 'id', $user_id ) ) ) continue;
 			//wp_mail( $user->user_email, $subject, $body );
