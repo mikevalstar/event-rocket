@@ -200,18 +200,21 @@ class EventRocket_RSVPAttendance
 
 	public function email_positives( $subject, $body ) {
 
+		$emailer = new EventRocket_EventEmail( $this->event_id, $subject, $body );
+
 		// registered
 		foreach ( $attendees as $user_id => $is_attending ) {
 			if ( ! $is_attending ) continue;
 			if ( ! ( $user = get_user_by( 'id', $user_id ) ) ) continue;
-			wp_mail( $user->user_email, $subject, $body );
-
+			//wp_mail( $user->user_email, $subject, $body );
+			$emailer->send( $user->user_email );
 		}
 
 		// unregistered
 		foreach ( $this->attendees[self::ANONYMOUS] as $attendee => $is_attending ) {
 			if ( ! $is_attending ) continue;
-			wp_mail( $attendee, $subject, $body );
+			//wp_mail( $attendee, $subject, $body );
+			$emailer->send( $attendee );
 		}
 	}
 }

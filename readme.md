@@ -126,6 +126,7 @@ required).
 ### 3.2
 * Further fix in [event_embed]'s query building
 * Limited attendance option added
+* Added ability to email attendees
 
 ### 3.1
 * Protective measures added to prevent/limit abuse of data shortcodes
