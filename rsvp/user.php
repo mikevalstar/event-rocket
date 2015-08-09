@@ -8,6 +8,7 @@ class EventRocket_RSVPUser
 
 	protected $user_id = 0;
 	protected $attendance = array();
+	protected $wait = array();
 
 
 	public function __construct( $user_id = 0 ) {
@@ -21,9 +22,21 @@ class EventRocket_RSVPUser
 		$this->save();
 	}
 
+	public function set_to_wait( $event_id ) {
+		$event_id = absint( $event_id );
+		$this->wait[$event_id] = 1;
+		$this->save();
+	}
+
 	public function set_to_not_attend( $event_id ) {
 		$event_id = absint( $event_id );
 		$this->attendance[$event_id] = 0;
+		$this->save();
+	}
+
+	public function set_to_not_wait( $event_id ) {
+		$event_id = absint( $event_id );
+		$this->wait[$event_id] = 0;
 		$this->save();
 	}
 

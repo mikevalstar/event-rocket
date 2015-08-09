@@ -10,6 +10,7 @@
  *
  * @var bool $enabled
  * @var bool $restricted
+ * @var bool $waitlist
  * @var number $limited
  * @var EventRocket_RSVPAttendance $attendance
  */
@@ -28,13 +29,17 @@ defined( 'ABSPATH' ) or die();
 		<td> <input type="checkbox" name="<?php esc_attr_e( EventRocket_RSVPManager::ENABLE_RSVP ) ?>" <?php checked( $enabled ) ?>/> </td>
 
 		<!-- Summary -->
-		<td rowspan="4">
+		<td rowspan="5">
 			<table>
 				<tr>
 					<td class="eventrocket_rsvp_attending"> <?php _e( 'Attending:', 'eventrocket' ) ?> </td>
 					<td> <strong> <?php echo $attendance->count_total_positive_responses() ?> </strong> </td>
 				</tr>
 			    <tr>
+				    <td class="eventrocket_rsvp_waiting"> <?php _e( 'Waiting:', 'eventrocket' ) ?> </td>
+				    <td> <strong> <?php echo $attendance->count_total_waiting_responses() ?> </strong> </td>
+			    </tr>
+				<tr>
 				    <td class="eventrocket_rsvp_not_attending"> <?php _e( 'Not attending:', 'eventrocket' ) ?> </td>
 				    <td> <strong> <?php echo $attendance->count_total_negative_responses() ?> </strong> </td>
 			    </tr>
@@ -53,7 +58,12 @@ defined( 'ABSPATH' ) or die();
 	</tr>
 
 	<tr class="eventrocket_additionaloptions">
-		<td> <?php _e( 'Limit attendance ', 'eventrocket' ) ?> <i><?php _e( '(-1 for unlimited)', 'eventrocket' ) ?></i>: </td>
+		<td> <?php _e( 'Limit attendance ', 'eventrocket' ) ?> <i><?php _e( '(0 for unlimited)', 'eventrocket' ) ?></i>: </td>
 		<td> <input type="number" name="<?php esc_attr_e( EventRocket_RSVPManager::LIMIT_RSVP ) ?>" value="<?php echo $limited ?>" min="0" /> </td>
+	</tr>
+
+	<tr class="eventrocket_additionaloptions">
+		<td> <?php _e( 'Allow wait list ', 'eventrocket' ) ?>: </td>
+		<td> <input type="checkbox" name="<?php esc_attr_e( EventRocket_RSVPManager::WAITLIST_RSVP ) ?>" <?php checked( $waitlist ) ?> /> </td>
 	</tr>
 </table>

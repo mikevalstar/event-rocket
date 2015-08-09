@@ -13,7 +13,7 @@ class EventRocket_RSVPForm
 	}
 
 	public function listen() {
-		if ( ! isset( $_POST['rsvp_attend'] ) && ! isset( $_POST['rsvp_withdraw'] ) ) return;
+		if ( ! isset( $_POST['rsvp_attend'] ) && ! isset( $_POST['rsvp_withdraw'] ) && !isset( $_POST['rsvp_waitlist'] ) ) return;
 		if ( ! wp_verify_nonce( $_POST['eventrocket_rsvp_check'], 'mark_attendance' . get_current_user_id() . get_the_ID() ) ) return;
 
 		if ( is_user_logged_in() ) $this->authed_request();
@@ -28,6 +28,9 @@ class EventRocket_RSVPForm
 
 		if ( isset( $_POST['rsvp_withdraw'] ) )
 			$attendance->set_to_not_attend( get_current_user_id() );
+
+		if ( isset( $_POST['rsvp_waitlist'] ) )
+			$attendance->set_to_wait( get_current_user_id() );
 	}
 
 	protected function unauthed_request() {
@@ -77,6 +80,7 @@ class EventRocket_RSVPForm
 		$enabled    = get_post_meta( get_the_ID(), EventRocket_RSVPManager::ENABLE_RSVP, true );
 		$restricted = get_post_meta( get_the_ID(), EventRocket_RSVPManager::RESTRICT_RSVP, true );
 		$limited 	= get_post_meta( get_the_ID(), EventRocket_RSVPManager::LIMIT_RSVP, true );
+		$waitlist 	= get_post_meta( get_the_ID(), EventRocket_RSVPManager::WAITLIST_RSVP, true );
 		$attendance = eventrocket_rsvp()->attendance();
 		$anon_accepted = ( get_the_ID() === $this->anon_sub_accepted );
 

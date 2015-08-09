@@ -2,16 +2,19 @@
 class EventRocket_RSVPAttendance
 {
 	const ATTENDEES = '_eventrocket_attendance';
+	const WAITLIST = '_eventrocket_waitlist';
 	const ANONYMOUS = -1;
 
 	protected $event_id  = 0;
 	protected $attendees = array();
+	protected $waitlist = array();
 	protected $email_rsvp = false;
 
 
 	public function __construct( $event_id ) {
 		$this->event_id  = $event_id;
 		$this->attendees = (array) get_post_meta( $this->event_id, self::ATTENDEES, true );
+		$this->waitlist = (array) get_post_meta( $this->event_id, self::WAITLIST, true );
 		$this->email_rsvp = get_post_meta( $this->event_id, EventRocket_RSVPManager::EMAIL_RSVP, true );
 		unset( $this->attendees[0] );
 	}
@@ -19,6 +22,11 @@ class EventRocket_RSVPAttendance
 	public function is_user_attending( $user_id ) {
 		$user_id = absint( $user_id );
 		return isset( $this->attendees[$user_id] ) && $this->attendees[$user_id];
+	}
+
+	public function is_user_waiting( $user_id ) {
+		$user_id = absint( $user_id );print_r($this->waitlist);
+		return isset( $this->waitlist[$user_id] ) && $this->waitlist[$user_id];
 	}
 
 	public function is_user_not_attending( $user_id ) {
@@ -46,10 +54,29 @@ class EventRocket_RSVPAttendance
 		$this->save();
 	}
 
+	public function set_to_wait( $user_id ) {
+		$user_id = absint( $user_id );
+		$user = new EventRocket_RSVPUser( $user_id );
+		$user->set_to_wait( $this->event_id );
+
+		$this->waitlist[$user_id] = 1;
+		$this->save();
+	}
+
 	public function set_to_not_attend( $user_id ) {
 		$user_id = absint( $user_id );
 		$user = new EventRocket_RSVPUser( $user_id );
 		$user->set_to_not_attend( $this->event_id );
+
+		// TODO: add user from waitlist
+		if(count($this->waitlist) > 0){
+			foreach($this->waitlist as $k => $v){
+				if($v == 1){
+					$this->set_to_attend( $k );
+					unset($this->waitlist[$k]);
+				}
+			}
+		}
 
 		$this->attendees[$user_id] = 0;
 		$this->save();
@@ -81,6 +108,7 @@ class EventRocket_RSVPAttendance
 
 	protected function save() {
 		update_post_meta( $this->event_id, self::ATTENDEES, $this->attendees );
+		update_post_meta( $this->event_id, self::WAITLIST, $this->waitlist );
 	}
 
 	public function count_total_responses() {
@@ -126,6 +154,12 @@ class EventRocket_RSVPAttendance
 		$responses = array_count_values( $attendees );
 		if ( ! isset( $responses[0] ) ) return 0;
 		else return $responses[0];
+	}
+
+	public function count_total_waiting_responses() {
+		$responses = array_count_values( $this->waitlist );
+		if ( ! isset( $responses[1] ) ) return 0;
+		else return $responses[1];
 	}
 
 	public function count_positive_anon_responses() {

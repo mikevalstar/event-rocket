@@ -4,6 +4,7 @@
  * @var bool $restricted
  * @var bool $limited
  * @var bool $anon_accepted
+ * @var bool $waitlist
  * @var EventRocket_RSVPAttendance $attendance
  */
 
@@ -30,7 +31,14 @@ $user_id = get_current_user_id();
 		<?php if ( is_user_logged_in() ): ?>
 			<?php if ( $limited > 0 && $attendance->count_total_positive_responses() >= $limited && $attendance->is_user_undetermined( $user_id ) ): ?>
 				<p>
-					<?php _e( 'This event is full', 'eventrocket' ) ?>
+					<?php _e( 'This event is full', 'eventrocket' ) ?> <?PHP echo $attendance->is_user_waiting( $user_id ) ?>
+					<?php if ( $waitlist && !$attendance->is_user_waiting( $user_id ) ): ?><br/>
+						<button class="eventrocket rsvp waitlist" name="rsvp_waitlist" value="<?php esc_attr_e( $user_id ) ?>">
+							<?php _e( 'Add to waitlist', 'eventrocket' ) ?>
+						</button>
+					<?php elseif ( $attendance->is_user_waiting( $user_id ) ): ?><br/>
+						<?php _e( 'You are on the waitlist', 'eventrocket' ) ?>
+					<?php endif ?>
 				</p>
 			<?php elseif ( $attendance->is_user_attending( $user_id ) ): ?>
 				<p>
